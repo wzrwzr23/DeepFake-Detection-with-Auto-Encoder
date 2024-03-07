@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 // material-ui
@@ -9,17 +9,72 @@ import { Card, Grid, Typography } from '@mui/material';
 import ApexCharts from 'apexcharts';
 import Chart from 'react-apexcharts';
 
-// project imports
-import chartData from './chart-data/bajaj-area-chart';
-
 // ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
 
 const BajajAreaChartCard = () => {
+  const [counters, setCounters] = useState([]);
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const { navType } = customization;
 
   const orangeDark = theme.palette.secondary[800];
+
+  useEffect(() => {
+    const fetchCounters = async () => {
+      try {
+        const response = await fetch('/api/counters');
+        const data = await response.json();
+        setCounters(data);
+      } catch (error) {
+        console.error('Error fetching counter data:', error);
+      }
+    };
+    fetchCounters();
+  }, []);
+
+  const chartData = {
+    type: 'area',
+    height: 200,
+    options: {
+      chart: {
+        id: 'support-chart',
+        sparkline: {
+          enabled: true
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 1
+      },
+      tooltip: {
+        fixed: {
+          enabled: false
+        },
+        x: {
+          show: false
+        },
+        y: {
+          title: 'Ticket '
+        },
+        marker: {
+          show: false
+        }
+      }
+    },
+    series: [
+      {
+        // data: [0, 15, 10, 50, 30, 40, 25]
+        data: counters.slice(0, 10).map((counter) => (
+          counter.avg_processing_time
+        ))
+      }
+      
+    ]
+  };
+
 
   useEffect(() => {
     const newSupportChart = {
@@ -39,24 +94,37 @@ const BajajAreaChartCard = () => {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography variant="subtitle1" sx={{ color: theme.palette.secondary.dark }}>
-                Bajaj Finery
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="h4" sx={{ color: theme.palette.grey[800] }}>
-                $1839.00
+                Queue Length Over Time
               </Typography>
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant="subtitle2" sx={{ color: theme.palette.grey[800] }}>
-            10% Profit
-          </Typography>
-        </Grid>
       </Grid>
       <Chart {...chartData} />
+      <table>
+        <thead>
+          <tr>
+            <th>Counter ID</th>
+            <th>Average Processing Time</th>
+            <th>Queue Length</th>
+            <th>Record Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {counters.map((counter) => (
+            <tr key={counter.counter_id}>
+              <td>{counter.counter_id}</td>
+              <td>{counter.avg_processing_time}</td>
+              <td>{counter.queue_length}</td>
+              <td>{counter.record_time}</td>
+              <td>{counter.status ? 'Active' : 'Inactive'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </Card>
+    
   );
 };
 

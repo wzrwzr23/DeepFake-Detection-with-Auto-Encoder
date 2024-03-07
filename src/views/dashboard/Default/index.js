@@ -5,11 +5,10 @@ import { Grid } from '@mui/material';
 
 // project imports
 import EarningCard from './queueLength';
-// import PopularCard from './PopularCard';
+import PopularCard from './PopularCard';
 import TotalOrderLineChartCard from './counterStatus';
 import TotalIncomeDarkCard from './arrivalRate';
 import TotalIncomeLightCard from './totalServiced';
-// import TotalGrowthBarChart from './TotalGrowthBarChart';
 import EarningCard2 from './queueLengthOverTime'
 import { gridSpacing } from 'store/constant';
 import MainCard from 'ui-component/cards/MainCard';
@@ -27,7 +26,7 @@ const Dashboard = () => {
     <Grid container spacing={gridSpacing}>
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
-          <Grid item lg={6} md={6} sm={6} xs={12}>
+          {/* <Grid item lg={6} md={6} sm={6} xs={12}>
             <TotalIncomeLightCard isLoading={isLoading} />
           </Grid>
           <Grid item lg={6} md={6} sm={6} xs={12} >
@@ -36,38 +35,17 @@ const Dashboard = () => {
           <Grid item lg={6} md={6} sm={6} xs={12}>
             <TotalOrderLineChartCard isLoading={isLoading} />
           </Grid>
-          {/* <Grid item lg={4} md={6} sm={6} xs={12}>
-            <Grid container spacing={gridSpacing}>
-              <Grid item sm={6} xs={12} md={6} lg={12}>
-                <TotalIncomeDarkCard isLoading={isLoading} />
-              </Grid>
-              <Grid item sm={6} xs={12} md={6} lg={12}>
-                <TotalIncomeLightCard isLoading={isLoading} />
-              </Grid>
-            </Grid>
-          </Grid> */}
           <Grid item lg={6} md={6} sm={6} xs={12}>
             <TotalIncomeDarkCard isLoading={isLoading}/>
           </Grid>
           <Grid item lg={6} md={6} sm={6} xs={12}>
             <EarningCard2 isLoading={isLoading} />
-          </Grid>
-
-          {/* <Grid item lg={4} md={6} sm={6} xs={12}>
-            <queueLengthOverTime isLoading={isLoading} />
           </Grid> */}
-        </Grid>
-      </Grid>
-      {/* <Grid item xs={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid item xs={12} md={8}>
-            <TotalGrowthBarChart isLoading={isLoading} />
-          </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <PopularCard isLoading={isLoading} />
           </Grid>
         </Grid>
-      </Grid> */}
+      </Grid>
     </Grid>
     </MainCard>
   );
