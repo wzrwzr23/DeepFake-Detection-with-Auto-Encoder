@@ -11,7 +11,7 @@ import Chart from 'react-apexcharts';
 
 // ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
 
-const ArrivalRate = () => {
+const WaitingTimeGraph = () => {
   const [counters, setCounters] = useState([]);
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
@@ -79,7 +79,7 @@ const ArrivalRate = () => {
       {
         // data: [0, 15, 10, 50, 30, 40, 25]
         data: counters.slice(0, 100).map((counter) => (
-          counter.arrival_rate
+          counter.avg_waiting_time
         ))
       }
       
@@ -105,7 +105,7 @@ const ArrivalRate = () => {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography variant="subtitle1" sx={{ color: theme.palette.secondary.dark }}>
-                Arrival Rate Over Time
+                Average Waiting Time Over Time
               </Typography>
             </Grid>
           </Grid>
@@ -117,4 +117,4 @@ const ArrivalRate = () => {
   );
 };
 
-export default ArrivalRate;
+export default WaitingTimeGraph;

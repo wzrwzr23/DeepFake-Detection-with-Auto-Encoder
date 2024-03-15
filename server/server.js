@@ -19,29 +19,23 @@ const config = {
 // Create a pool of database connections
 const pool = new mssql.ConnectionPool(config);
 
-app.get('/api/passengers', async (req, res) => {
-  try {
-    // Connect to the database
-    await pool.connect();
-
-    // Query the database (replace with your own query)
-    const result = await pool.request().query('SELECT * FROM dbo.passenger');
-
-    // Send the result as JSON
-    res.json(result.recordset);
-  } catch (error) {
-    console.error('Error querying database:', error);
-    res.status(500).send('Internal Server Error');
-  } finally {
-    // Close the database connection
-    pool.close();
-  }
-});
-
 app.get('/api/counters', async (req, res) => {
     try {
       await pool.connect();
       const result = await pool.request().query('SELECT * FROM [dbo].[counter]');
+      res.json(result.recordset);
+    } catch (error) {
+      console.error('Error querying counter data:', error);
+      res.status(500).send('Internal Server Error');
+    } finally {
+      pool.close();
+    }
+  });
+
+app.get('/api/cur_counters', async (req, res) => {
+    try {
+      await pool.connect();
+      const result = await pool.request().query('SELECT * FROM [dbo].[current_counter]');
       res.json(result.recordset);
     } catch (error) {
       console.error('Error querying counter data:', error);

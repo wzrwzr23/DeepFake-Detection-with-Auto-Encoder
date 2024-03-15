@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import { CardContent, Divider, Grid} from '@mui/material';
 
 // project imports
-import BajajAreaChartCard from './BajajAreaChartCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
-
+import ArrivalRate from './arrivalRate';
+import ServiceRate from './serviceRate';
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
 
-const PopularCard = ({ isLoading }) => {
+const ArrivalAndService = ({ isLoading }) => {
   return (
     <>
       {isLoading ? (
@@ -18,14 +18,14 @@ const PopularCard = ({ isLoading }) => {
       ) : (
           <CardContent>
             <Grid container spacing={gridSpacing}>
+              <Grid item xs={12} sx={{ pt: '16px !important' }}>
+                <ArrivalRate />
+              </Grid>
               <Grid item xs={12}>
                 <Divider sx={{ my: 1.5 }} />
               </Grid>
               <Grid item xs={12} sx={{ pt: '16px !important' }}>
-                <BajajAreaChartCard />
-              </Grid>
-              <Grid item xs={12}>
-                <Divider sx={{ my: 1.5 }} />
+                <ServiceRate />
               </Grid>
             </Grid>
           </CardContent>
@@ -34,8 +34,8 @@ const PopularCard = ({ isLoading }) => {
   );
 };
 
-PopularCard.propTypes = {
+ArrivalAndService.propTypes = {
   isLoading: PropTypes.bool
 };
 
-export default PopularCard;
+export default ArrivalAndService;

@@ -11,26 +11,37 @@ import Chart from 'react-apexcharts';
 
 // ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
 
-const BajajAreaChartCard = () => {
+const QueueLengthGraph = () => {
   const [counters, setCounters] = useState([]);
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const { navType } = customization;
 
   const orangeDark = theme.palette.secondary[800];
+  const fetchCounters = async () => {
+    try {
+      const response = await fetch('/api/counters');
+      const data = await response.json();
+      setCounters(data);
+      console.log(data.slice(0, 100).map((counter) => (
+        counter.queue_length
+      )));
+    } catch (error) {
+      console.error('Error fetching counter data:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchCounters = async () => {
-      try {
-        const response = await fetch('/api/counters');
-        const data = await response.json();
-        setCounters(data);
-      } catch (error) {
-        console.error('Error fetching counter data:', error);
-      }
-    };
+    // Fetch data initially
     fetchCounters();
+    
+    // // Fetch data every second
+    // const intervalId = setInterval(fetchCounters, 1000);
+
+    // // Cleanup interval on component unmount
+    // return () => clearInterval(intervalId);
   }, []);
+
 
   const chartData = {
     type: 'area',
@@ -67,8 +78,8 @@ const BajajAreaChartCard = () => {
     series: [
       {
         // data: [0, 15, 10, 50, 30, 40, 25]
-        data: counters.slice(0, 10).map((counter) => (
-          counter.avg_processing_time
+        data: counters.slice(0, 100).map((counter) => (
+          counter.queue_length
         ))
       }
       
@@ -101,31 +112,9 @@ const BajajAreaChartCard = () => {
         </Grid>
       </Grid>
       <Chart {...chartData} />
-      <table>
-        <thead>
-          <tr>
-            <th>Counter ID</th>
-            <th>Average Processing Time</th>
-            <th>Queue Length</th>
-            <th>Record Time</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {counters.map((counter) => (
-            <tr key={counter.counter_id}>
-              <td>{counter.counter_id}</td>
-              <td>{counter.avg_processing_time}</td>
-              <td>{counter.queue_length}</td>
-              <td>{counter.record_time}</td>
-              <td>{counter.status ? 'Active' : 'Inactive'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </Card>
     
   );
 };
 
-export default BajajAreaChartCard;
+export default QueueLengthGraph;

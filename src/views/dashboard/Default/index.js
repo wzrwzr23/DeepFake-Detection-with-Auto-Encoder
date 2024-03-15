@@ -4,15 +4,11 @@ import { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 
 // project imports
-import EarningCard from './queueLength';
-import PopularCard from './PopularCard';
-import TotalOrderLineChartCard from './counterStatus';
-import TotalIncomeDarkCard from './arrivalRate';
-import TotalIncomeLightCard from './totalServiced';
-import EarningCard2 from './queueLengthOverTime'
+import WaitAndLength from './waitAndLength';
 import { gridSpacing } from 'store/constant';
 import MainCard from 'ui-component/cards/MainCard';
-
+import ArrivalAndService from './arrivalAndService';
+import TotalGrowthBarChart from './TotalGrowthBarChart'
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
 const Dashboard = () => {
@@ -26,23 +22,14 @@ const Dashboard = () => {
     <Grid container spacing={gridSpacing}>
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
-          {/* <Grid item lg={6} md={6} sm={6} xs={12}>
-            <TotalIncomeLightCard isLoading={isLoading} />
-          </Grid>
-          <Grid item lg={6} md={6} sm={6} xs={12} >
-            <EarningCard isLoading={isLoading} />
-          </Grid>
-          <Grid item lg={6} md={6} sm={6} xs={12}>
-            <TotalOrderLineChartCard isLoading={isLoading} />
-          </Grid>
-          <Grid item lg={6} md={6} sm={6} xs={12}>
-            <TotalIncomeDarkCard isLoading={isLoading}/>
-          </Grid>
-          <Grid item lg={6} md={6} sm={6} xs={12}>
-            <EarningCard2 isLoading={isLoading} />
-          </Grid> */}
           <Grid item xs={12} md={6}>
-            <PopularCard isLoading={isLoading} />
+            <WaitAndLength isLoading={isLoading} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ArrivalAndService isLoading={isLoading} />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <TotalGrowthBarChart isLoading={isLoading} />
           </Grid>
         </Grid>
       </Grid>
