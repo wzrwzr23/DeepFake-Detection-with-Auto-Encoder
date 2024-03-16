@@ -23,9 +23,9 @@ const ServiceRate = () => {
       const response = await fetch('/api/counters');
       const data = await response.json();
       setCounters(data);
-      console.log(data.slice(0, 100).map((counter) => (
-        counter.queue_length
-      )));
+      // console.log(data.slice(0, 100).map((counter) => (
+      //   counter.queue_length
+      // )));
     } catch (error) {
       console.error('Error fetching counter data:', error);
     }
