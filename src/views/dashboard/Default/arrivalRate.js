@@ -65,7 +65,7 @@ const ArrivalRate = () => {
           enabled: false
         },
         x: {
-          show: false
+          show: true
         },
         y: {
           title: 'Ticket '
@@ -77,12 +77,12 @@ const ArrivalRate = () => {
     },
     series: [
       {
-        // data: [0, 15, 10, 50, 30, 40, 25]
-        data: counters.slice(0, 100).map((counter) => (
-          counter.arrival_rate
-        ))
+        name: 'Arrival Rate',
+        data: counters.map((counter) => ({
+          x: new Date(counter.record_time).getTime(), // Convert record_time to milliseconds
+          y: counter.arrival_rate
+        }))
       }
-      
     ]
   };
 

@@ -12,7 +12,9 @@ import Chart from 'react-apexcharts';
 // ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
 
 const WaitingTimeGraph = () => {
-  const [counters, setCounters] = useState([]);
+  const [counter1, setCounter1] = useState([]);
+  const [counter2, setCounter2] = useState([]);
+
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const { navType } = customization;
@@ -20,12 +22,13 @@ const WaitingTimeGraph = () => {
   const orangeDark = theme.palette.secondary[800];
   const fetchCounters = async () => {
     try {
-      const response = await fetch('/api/counters');
-      const data = await response.json();
-      setCounters(data);
-      // console.log(data.slice(0, 100).map((counter) => (
-      //   counter.queue_length
-      // )));
+      const response1 = await fetch('/api/counter1');
+      const data1 = await response1.json();
+      setCounter1(data1);
+      const response2 = await fetch('/api/counter2');
+      const data2 = await response2.json();
+      setCounter2(data2);
+
     } catch (error) {
       console.error('Error fetching counter data:', error);
     }
@@ -77,12 +80,17 @@ const WaitingTimeGraph = () => {
     },
     series: [
       {
-        // data: [0, 15, 10, 50, 30, 40, 25]
-        data: counters.slice(0, 100).map((counter) => (
+        name: 'Counter 1',
+        data: counter1.map((counter) => (
+          counter.avg_waiting_time
+        ))
+      },
+      {
+        name: 'Counter 2',
+        data: counter2.map((counter) => (
           counter.avg_waiting_time
         ))
       }
-      
     ]
   };
 

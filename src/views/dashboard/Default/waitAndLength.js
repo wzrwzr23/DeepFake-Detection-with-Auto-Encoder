@@ -8,7 +8,6 @@ import QueueLengthGraph from './queueLengthGraph';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
 import WaitingTimeGraph from './waitingTimeGraph';
-import QueueLengthGraphSim from './queueLengthGraphSim';
 
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
 
