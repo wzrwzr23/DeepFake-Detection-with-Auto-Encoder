@@ -8,39 +8,27 @@ import { Card, Grid, Typography, Checkbox, TextField, Button } from '@mui/materi
 // third-party
 import ApexCharts from 'apexcharts';
 import Chart from 'react-apexcharts';
-import { columns } from 'mssql';
 
 // ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
 
 const QueueLengthGraphSim = () => {
-  // data returned from server
   const [counters, setCounters] = useState({
     counter1: { queue_length: [], served_customers: [] },
     counter2: { queue_length: [], served_customers: [] }
-  });
-  // useEffect(() => {
-  //   setCounters({
-  //     counter1: { queue_length: [], served_customers: [] },
-  //     counter2: { queue_length: [], served_customers: [] }
-  //   });
-  // });
+  });  
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
   const { navType } = customization;
 
-  const orangeDark = theme.palette
-  // const anotherColor = theme.palette
+  const orangeDark = theme.palette.secondary[800];
 
-  // "counter" [False, True]
   const [counter, setCounter] = useState([]);
-  // "points" [60, 120, 145]
+
   const [points, setPoints] = useState([]); // Initial time span in minutes
   const [isLoading, setLoading] = useState(true);
   const [rowCount, setRowCount] = useState(0);
   const [showRows, setShowRows] = useState(false);
-  // "time" 180
   const [totalTime, setTotalTime] = useState(0);
-  // "changes" [[True, True], [True, False], [True, True]]
   const [changes, setChanges] = useState([counter]);
   const [tempRowCount, setTempRowCount] = useState('');
   const [tempTotalTime, setTempTotalTime] = useState('');
@@ -112,7 +100,7 @@ const QueueLengthGraphSim = () => {
     });
   };
 
-  // Handler function to update the time span for a specific counter
+  // Handler function to update the time span
   const handleTimeSpanChange = (index, value) => {
     setPoints((prevSpans) => {
       const newSpans = [...prevSpans];
@@ -209,6 +197,7 @@ const QueueLengthGraphSim = () => {
     ]
   };
 
+
   useEffect(() => {
     const newSupportChart = {
       ...chartData.options,
@@ -274,4 +263,3 @@ const QueueLengthGraphSim = () => {
 };
 
 export default QueueLengthGraphSim;
-
