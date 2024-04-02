@@ -22,10 +22,10 @@ const WaitingTimeGraph = () => {
   const orangeDark = theme.palette.secondary[800];
   const fetchCounters = async () => {
     try {
-      const response1 = await fetch('/api/counter1');
+      const response1 = await fetch('http://127.0.0.1:5001/counter?counter_id=1');
       const data1 = await response1.json();
       setCounter1(data1);
-      const response2 = await fetch('/api/counter2');
+      const response2 = await fetch('http://127.0.0.1:5001/counter?counter_id=2');
       const data2 = await response2.json();
       setCounter2(data2);
 
@@ -81,15 +81,11 @@ const WaitingTimeGraph = () => {
     series: [
       {
         name: 'Counter 1',
-        data: counter1.map((counter) => (
-          counter.avg_waiting_time
-        ))
+        data: counter1.avg_waiting_time
       },
       {
         name: 'Counter 2',
-        data: counter2.map((counter) => (
-          counter.avg_waiting_time
-        ))
+        data: counter2.avg_waiting_time
       }
     ]
   };

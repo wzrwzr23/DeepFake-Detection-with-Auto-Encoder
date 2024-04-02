@@ -21,10 +21,16 @@ const ServiceRate = () => {
   const orangeDark = theme.palette.secondary[800];
   const fetchCounters = async () => {
     try {
-      const response1 = await fetch('/api/counter1');
+      const response1 = await fetch('http://127.0.0.1:5001/counter?counter_id=1');
+      if (!response1.ok) {
+        throw new Error('Failed to trigger script');
+      }
       const data1 = await response1.json();
       setCounter1(data1);
-      const response2 = await fetch('/api/counter2');
+      const response2 = await fetch('http://127.0.0.1:5001/counter?counter_id=2');
+      if (!response2.ok) {
+        throw new Error('Failed to trigger script');
+      }
       const data2 = await response2.json();
       setCounter2(data2);
     } catch (error) {
@@ -35,7 +41,7 @@ const ServiceRate = () => {
   useEffect(() => {
     // Fetch data initially
     fetchCounters();
-    
+
     // // Fetch data every second
     // const intervalId = setInterval(fetchCounters, 1000);
 
@@ -43,6 +49,8 @@ const ServiceRate = () => {
     // return () => clearInterval(intervalId);
   }, []);
 
+  // const firstRecordTime = counter1.record_time[0].slice(11, 16);
+  // const lastRecordTime = counter1.record_time[counter1.record_time.length - 1].slice(11, 16);
 
   const chartData = {
     type: 'area',
@@ -79,15 +87,11 @@ const ServiceRate = () => {
     series: [
       {
         name: 'Counter 1',
-        data: counter1.map((counter) => (
-          counter.service_rate
-        ))
+        data: counter1.service_rate
       },
       {
         name: 'Counter 2',
-        data: counter2.map((counter) => (
-          counter.service_rate
-        ))
+        data: counter2.service_rate
       }
     ]
   };
@@ -118,8 +122,22 @@ const ServiceRate = () => {
         </Grid>
       </Grid>
       <Chart {...chartData} />
+      <Grid container justifyContent="space-between" sx={{ p: 2 }}>
+        <Grid item>
+          {/* Display first record_time with only the time part */}
+          <Typography variant="caption" color="text.secondary">
+            {/* {firstRecordTime} */}
+          </Typography>
+        </Grid>
+        <Grid item>
+          {/* Display last record_time with only the time part */}
+          <Typography variant="caption" color="text.secondary">
+            {/* {lastRecordTime} */}
+          </Typography>
+        </Grid>
+      </Grid>
     </Card>
-    
+
   );
 };
 

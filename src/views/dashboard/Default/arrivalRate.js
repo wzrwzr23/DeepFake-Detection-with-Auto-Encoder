@@ -20,12 +20,10 @@ const ArrivalRate = () => {
   const orangeDark = theme.palette.secondary[800];
   const fetchCounters = async () => {
     try {
-      const response = await fetch('/api/counters');
+      const response = await fetch('http://127.0.0.1:5001/arrival_rate');
       const data = await response.json();
+      console.log(data);
       setCounters(data);
-      // console.log(data.slice(0, 100).map((counter) => (
-      //   counter.queue_length
-      // )));
     } catch (error) {
       console.error('Error fetching counter data:', error);
     }
@@ -65,7 +63,7 @@ const ArrivalRate = () => {
           enabled: false
         },
         x: {
-          show: true
+          show: false
         },
         y: {
           title: 'Ticket '
@@ -78,10 +76,7 @@ const ArrivalRate = () => {
     series: [
       {
         name: 'Arrival Rate',
-        data: counters.map((counter) => ({
-          x: new Date(counter.record_time).getTime(), // Convert record_time to milliseconds
-          y: counter.arrival_rate
-        }))
+        data: counters.arrival_rate
       }
     ]
   };

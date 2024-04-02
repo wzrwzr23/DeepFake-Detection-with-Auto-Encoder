@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import Loadable from 'ui-component/Loadable';
+import { lazy } from 'react';
 
 // material-ui
 import { CardContent, Divider, Grid} from '@mui/material';
@@ -6,8 +8,11 @@ import { CardContent, Divider, Grid} from '@mui/material';
 // project imports
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
-import ArrivalRate from './arrivalRate';
-import ServiceRate from './serviceRate';
+// import ArrivalRate from './arrivalRate';
+// import ServiceRate from './serviceRate';
+const ArrivalRate = Loadable(lazy(() => import('./arrivalRate')));
+const ServiceRate = Loadable(lazy(() => import('./serviceRate')));
+
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
 
 const ArrivalAndService = ({ isLoading }) => {
