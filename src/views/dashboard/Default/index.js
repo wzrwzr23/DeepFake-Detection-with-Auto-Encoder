@@ -28,6 +28,7 @@ const Dashboard = () => {
   const [counter1, setCounter1] = useState([]);
   const [counter2, setCounter2] = useState([]);
   const [allcounters, setAllCounters] = useState([]);
+  const [service, setService] = useState([])
 
   const [firstRecordTime, setFirstRecordTime] = useState();
   const [lastRecordTime, setLastRecordTime] = useState();
@@ -49,8 +50,8 @@ const Dashboard = () => {
       const response2 = await fetch('http://127.0.0.1:5001/counter?counter_id=2');
       const data2 = await response2.json();
       setCounter2(data2);
-      setLastRecordTime(data1.record_time[0].slice(11, 16));
-      setFirstRecordTime(data1.record_time[data1.record_time.length - 1].slice(11, 16));
+      setFirstRecordTime(data1.record_time[0].slice(11, 16));
+      setLastRecordTime(data1.record_time[data1.record_time.length - 1].slice(11, 16));
       const response = await fetch('http://127.0.0.1:5001/arrival_rate');
       const data = await response.json();
       setAllCounters(data);
@@ -58,6 +59,10 @@ const Dashboard = () => {
       const data3 = await response3.json();
       setCounter1Status(data3.status[0]);
       setCounter2Status(data3.status[1]);
+      const ser_response = await fetch('http://127.0.0.1:5001/service_rate');
+      const data4 = await ser_response.json();
+      setService(data4);
+      console.log(data4);
     } catch (error) {
       console.error('Error fetching counter data:', error);
     }
@@ -246,12 +251,8 @@ const Dashboard = () => {
     },
     series: [
       {
-        name: 'Counter 1',
-        data: counter1.service_rate
-      },
-      {
-        name: 'Counter 2',
-        data: counter2.service_rate
+        name: 'Service Rate',
+        data: service.service_rate
       }
     ]
   };

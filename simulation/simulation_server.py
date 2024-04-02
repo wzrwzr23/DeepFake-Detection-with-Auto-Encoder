@@ -388,13 +388,12 @@ def trigger_script():
     for i in request_data["points"]:
         points.append(int(i))
 
-    print(int(request_data["time"]),
-          request_data["points"], request_data["changes"])
+    # print(int(request_data["time"]),request_data["points"], request_data["changes"])
     simulation.run(int(request_data["time"]), points, request_data["changes"])
 
-    print({"counter1": simulation.allcounters[0].live_data,
-          "counter2": simulation.allcounters[1].live_data})
-    print(simulation.liveunsatisfied_customers)
+    # print({"counter1": simulation.allcounters[0].live_data,
+    #       "counter2": simulation.allcounters[1].live_data})
+    # print(simulation.liveunsatisfied_customers)
     return jsonify({"counter1": simulation.allcounters[0].live_data, "counter2": simulation.allcounters[1].live_data, "unsatisfied": simulation.liveunsatisfied_customers[-1]})
 
 
@@ -407,7 +406,7 @@ def fetch_counter():
         # Return HTTP status code 400 (Bad Request)
         return jsonify(error_message), 400
 
-    select_cmd = f"SELECT * FROM [dbo].[counter] WHERE counter_id = {counter_id}"
+    select_cmd = f"SELECT * FROM [dbo].[counter] WHERE counter_id = {counter_id} order by record_time asc"
     cursor.execute(select_cmd)
     results = cursor.fetchall()
 
@@ -435,7 +434,7 @@ def fetch_arrival_rate():
     cursor.execute(select_cmd)
     counter_id = cursor.fetchone()
 
-    select_cmd = f"SELECT arrival_rate, record_time FROM [dbo].[counter] WHERE counter_id = {counter_id[0]} order by record_time desc"
+    select_cmd = f"SELECT arrival_rate, record_time FROM [dbo].[counter] WHERE counter_id = {counter_id[0]} order by record_time asc"
     cursor.execute(select_cmd)
     results = cursor.fetchall()
 
@@ -443,6 +442,24 @@ def fetch_arrival_rate():
 
     for row in results:
         result_dict["arrival_rate"].append(float(row[0]))
+        result_dict["record_time"].append(str(row[1]))
+
+    return json.dumps(result_dict), 200
+
+@app.route('/service_rate', methods=['GET'])
+def fetch_service_rate():
+    select_cmd = f"SELECT distinct(counter_id) FROM [dbo].[current_counter]"
+    cursor.execute(select_cmd)
+    counter_id = cursor.fetchone()
+
+    select_cmd = f"SELECT service_rate, record_time FROM [dbo].[counter] WHERE counter_id = {counter_id[0]} order by record_time asc"
+    cursor.execute(select_cmd)
+    results = cursor.fetchall()
+
+    result_dict = {"service_rate": [], "record_time": []}
+
+    for row in results:
+        result_dict["service_rate"].append(float(row[0]))
         result_dict["record_time"].append(str(row[1]))
 
     return json.dumps(result_dict), 200
@@ -470,7 +487,7 @@ def fetch_cur_counter():
                 value = str(value)
             result_dict[columns[i]].append(value)
 
-    print(result_dict)
+    # print(result_dict)
     return json.dumps(result_dict), 200
 
 
