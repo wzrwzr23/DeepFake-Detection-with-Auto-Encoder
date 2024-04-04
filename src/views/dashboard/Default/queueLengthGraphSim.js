@@ -182,7 +182,7 @@ const QueueLengthGraphSim = () => {
           enabled: false
         },
         x: {
-          show: true
+          show: false
         },
         y: {
           title: 'num of people '

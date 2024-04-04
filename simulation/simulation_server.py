@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import heapq
 import random
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__)
 
@@ -349,9 +349,6 @@ class CallCenterSimulation:
 
         }
 
-
-simulation1 = CallCenterSimulation(12, [6/1, 8/1], [True, False])
-
 # ===========================================
 
 
@@ -362,7 +359,9 @@ cursor = conn.cursor()
 
 def get_current_counter():
     # Fetch all latest counter info
+
     select_cmd = f"SELECT status, arrival_rate, service_rate, counter_id FROM [dbo].[current_counter] ORDER BY counter_id ASC"
+
     cursor.execute(select_cmd)
     results = cursor.fetchall()  # Fetch the results
     counter_info = {}
@@ -388,25 +387,25 @@ def trigger_script():
     for i in request_data["points"]:
         points.append(int(i))
 
-    # print(int(request_data["time"]),request_data["points"], request_data["changes"])
     simulation.run(int(request_data["time"]), points, request_data["changes"])
-
-    # print({"counter1": simulation.allcounters[0].live_data,
-    #       "counter2": simulation.allcounters[1].live_data})
-    # print(simulation.liveunsatisfied_customers)
     return jsonify({"counter1": simulation.allcounters[0].live_data, "counter2": simulation.allcounters[1].live_data, "unsatisfied": simulation.liveunsatisfied_customers[-1]})
 
 
 @app.route('/counter', methods=['GET'])
 def fetch_counter():
-    # print(request)
     counter_id = request.args.get('counter_id')
+    current_date = str(datetime.date.today())
+    start_date = str(request.args.get('start_date', default=current_date))
+    end_date = str(request.args.get('end_date', default=current_date))
+
     if counter_id is None:
         error_message = {'error': 'counter_id parameter is required.'}
         # Return HTTP status code 400 (Bad Request)
         return jsonify(error_message), 400
 
-    select_cmd = f"SELECT * FROM [dbo].[counter] WHERE counter_id = {counter_id} order by record_time asc"
+    # select_cmd = f'''SELECT * FROM [dbo].[counter_fake]
+    select_cmd = f'''SELECT * FROM [dbo].[counter] 
+    WHERE counter_id = {counter_id} and record_time between '{start_date} 00:00:00' and '{end_date} 23:59:59' '''
     cursor.execute(select_cmd)
     results = cursor.fetchall()
 
@@ -430,11 +429,32 @@ def fetch_counter():
 
 @app.route('/arrival_rate', methods=['GET'])
 def fetch_arrival_rate():
-    select_cmd = f"SELECT distinct(counter_id) FROM [dbo].[current_counter]"
+    current_date = str(datetime.date.today())
+    start_date = str(request.args.get('start_date', default=current_date))
+    end_date = str(request.args.get('end_date', default=current_date))
+
+    select_cmd = f"SELECT distinct(counter_id) FROM [dbo].[current_counter] "
     cursor.execute(select_cmd)
     counter_id = cursor.fetchone()
 
-    select_cmd = f"SELECT arrival_rate, record_time FROM [dbo].[counter] WHERE counter_id = {counter_id[0]} order by record_time asc"
+    # select_cmd = f'''SELECT arrival_rate, record_time FROM [dbo].[counter]
+    # WHERE counter_id = {counter_id[0]} and record_time between
+    # '{start_date} 00:00:00' and '{end_date} 23:59:59' '''
+
+    select_cmd = f'''
+    SELECT 
+        SUM(arrival_rate * 0.5) AS arrival_rate_per_hour,
+        DATEADD(HOUR, DATEDIFF(HOUR, 0, record_time), 0) AS hour_start
+    FROM 
+        dbo.counter_fake
+    WHERE counter_id = {counter_id[0]} and record_time between 
+        '{start_date} 00:00:00' and '{end_date} 23:59:59'
+    GROUP BY 
+        DATEADD(HOUR, DATEDIFF(HOUR, 0, record_time), 0)
+    ORDER BY 
+        hour_start ASC
+    '''
+    # print(select_cmd)
     cursor.execute(select_cmd)
     results = cursor.fetchall()
 
@@ -446,20 +466,41 @@ def fetch_arrival_rate():
 
     return json.dumps(result_dict), 200
 
+
 @app.route('/service_rate', methods=['GET'])
 def fetch_service_rate():
-    select_cmd = f"SELECT distinct(counter_id) FROM [dbo].[current_counter]"
-    cursor.execute(select_cmd)
-    counter_id = cursor.fetchone()
+    counter_id = request.args.get('counter_id')
+    current_date = str(datetime.date.today())
+    start_date = str(request.args.get('start_date', default=current_date))
+    end_date = str(request.args.get('end_date', default=current_date))
 
-    select_cmd = f"SELECT service_rate, record_time FROM [dbo].[counter] WHERE counter_id = {counter_id[0]} order by record_time asc"
+    if start_date is None:
+        error_message = {'error': 'start_date parameter is required.'}
+        # Return HTTP status code 400 (Bad Request)
+        return jsonify(error_message), 400
+
+    if end_date is None:
+        error_message = {'error': 'end_date parameter is required.'}
+        # Return HTTP status code 400 (Bad Request)
+        return jsonify(error_message), 400
+
+    # select_cmd = f'''SELECT service_rate, record_time FROM [dbo].[counter_fake] WHERE counter_id = {counter_id}
+    select_cmd = f'''    SELECT 
+        AVG(service_rate) AS service_rate_per_hour,
+        DATEADD(HOUR, DATEDIFF(HOUR, 0, record_time), 0) AS hour_start
+    FROM 
+        dbo.counter
+    WHERE counter_id = {counter_id} and record_time between 
+        '{start_date} 00:00:00' and '{end_date} 23:59:59'
+    GROUP BY 
+        DATEADD(HOUR, DATEDIFF(HOUR, 0, record_time), 0) '''
     cursor.execute(select_cmd)
     results = cursor.fetchall()
 
     result_dict = {"service_rate": [], "record_time": []}
 
     for row in results:
-        result_dict["service_rate"].append(float(row[0]))
+        result_dict["service_rate"].append(float(row[0]) * 60)
         result_dict["record_time"].append(str(row[1]))
 
     return json.dumps(result_dict), 200
@@ -489,6 +530,31 @@ def fetch_cur_counter():
 
     # print(result_dict)
     return json.dumps(result_dict), 200
+
+
+@app.route('/update_counter', methods=['POST'])
+def update_cur_counter():
+    status = request.json
+    # print(type(status))
+    for counter_id, s in status.items():
+        sql_cmd = f'''
+            UPDATE [dbo].[current_counter]
+            SET status = {s}
+            WHERE counter_id = {counter_id}'''
+        cursor.execute(sql_cmd)
+        cursor.commit()
+
+    return "Current counter status updated", 200
+
+
+@app.route('/')
+def serve_index():
+    return send_from_directory('unity', 'index.html')
+
+
+@app.route('/<path:path>')
+def serve_files(path):
+    return send_from_directory('unity', path)
 
 
 @app.after_request

@@ -12,9 +12,9 @@ const other = {
   children: [
     {
       id: 'sample-page',
-      title: 'Simulation',
+      title: '3D Visualisation',
       type: 'item',
-      url: '/simulation',
+      url: '/sample-page',
       icon: icons.IconBrandChrome,
       breadcrumbs: false
     }

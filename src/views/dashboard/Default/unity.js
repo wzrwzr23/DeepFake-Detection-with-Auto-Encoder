@@ -1,35 +1,25 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+function UnityComponent() {
+    const [htmlContent, setHtmlContent] = useState('');
 
-// material-ui
-import { useTheme } from '@mui/material/styles';
-import { Card, Grid, Typography } from '@mui/material';
+    useEffect(() => {
+        async function fetchUnityHtml() {
+            try {
+                const response = await fetch('http://127.0.0.1:5001/');
+                const html = await response.text();
+                console.log(html);
+                setHtmlContent(html);
+            } catch (error) {
+                console.error('Error fetching Unity HTML:', error);
+            }
+        }
 
-import { Unity, useUnityContext } from "react-unity-webgl";
+        fetchUnityHtml();
+    }, []);
 
-// ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
+    return (
+        <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+    );
+}
 
-const Unity = () => {
-  const theme = useTheme();
-  const customization = useSelector((state) => state.customization);
-  const { navType } = customization;
-
-  return (
-    <Card sx={{ bgcolor: 'secondary.light' }}>
-      <Grid container sx={{ p: 2, pb: 0, color: '#fff' }}>
-        <iframe
-          title="Unity WebGL"
-          src="/unity/index.html"  // Adjust the path as per your project structure
-          width="960"
-          height="600"
-          frameBorder="0"
-          allowFullScreen
-          allow="autoplay; fullscreen"
-        ></iframe>
-      </Grid>
-    </Card>
-
-  );
-};
-
-export default Unity;
+export default UnityComponent;
