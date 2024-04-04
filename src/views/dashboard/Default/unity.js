@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React from "react";
+import { Unity, useUnityContext } from "react-unity-webgl";
+
 function UnityComponent() {
-    const [htmlContent, setHtmlContent] = useState('');
-
-    useEffect(() => {
-        async function fetchUnityHtml() {
-            try {
-                const response = await fetch('http://127.0.0.1:5001/');
-                const html = await response.text();
-                console.log(html);
-                setHtmlContent(html);
-            } catch (error) {
-                console.error('Error fetching Unity HTML:', error);
-            }
-        }
-
-        fetchUnityHtml();
-    }, []);
+    const { unityProvider, loadingProgression, isLoaded } = useUnityContext({
+        loaderUrl: "/unity/Build/CapUnity.loader.js",
+        dataUrl: "/unity/Build/webgl.data",
+        frameworkUrl: "/unity/Build/build.framework.js",
+        codeUrl: "/unity/Build/build.wasm",
+    });
 
     return (
-        <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+        <div>
+            {!isLoaded && (
+                <p>Loading Application... {Math.round(loadingProgression * 100)}%</p>
+            )}
+            <Unity
+                unityProvider={unityProvider}
+                style={{ visibility: isLoaded ? "visible" : "hidden" }}
+            />
+        </div>
     );
 }
-
 export default UnityComponent;

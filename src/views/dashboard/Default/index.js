@@ -843,15 +843,9 @@ const Dashboard = () => {
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
-                            <Typography variant="body2">Current Counter 1: {counter1Status ? 'Open' : 'Closed'}</Typography>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <Typography variant="body2">Current Counter 2: {counter2Status ? 'Open' : 'Closed'}</Typography>
-                          </Grid>
-                          <Grid item xs={6}>
                             <Grid container alignItems="center">
                               <Grid item xs={12}>
-                                <Typography variant="body2">Update Counter 1 Current Status:</Typography>
+                                <Typography variant="body2">Counter 1 Current Status:</Typography>
                                 <Switch checked={counter1Status} onChange={handleCounter1Toggle} />
                               </Grid>
                             </Grid>
@@ -859,10 +853,16 @@ const Dashboard = () => {
                           <Grid item xs={6}>
                             <Grid container alignItems="center">
                               <Grid item xs={12}>
-                                <Typography variant="body2">Update Counter 2 Current Status:</Typography>
+                                <Typography variant="body2">Counter 2 Current Status:</Typography>
                                 <Switch checked={counter2Status} onChange={handleCounter2Toggle} />
                               </Grid>
                             </Grid>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Typography variant="body2">&nbsp;&nbsp;&nbsp;{counter1Status ? 'Open' : 'Closed'}</Typography>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Typography variant="body2">&nbsp;&nbsp;&nbsp;{counter2Status ? 'Open' : 'Closed'}</Typography>
                           </Grid>
                         </Grid>
                       </Card>
@@ -896,7 +896,11 @@ const Dashboard = () => {
                   <CardContent>
                     <Grid container spacing={gridSpacing}>
                       <Grid item xs={12}>
-                        <VideoStreamCanvas streamUrl='https://capstone-flask.azurewebsites.net/frame' />
+                        {/* <VideoStreamCanvas streamUrl='https://capstone-flask.azurewebsites.net/frame' /> */}
+                        <video controls width="500">
+                          <source src="/output.avi" type="video/avi" />
+                          {/* Your browser does not support the video tag. */}
+                        </video>
                       </Grid>
                     </Grid>
                   </CardContent>
