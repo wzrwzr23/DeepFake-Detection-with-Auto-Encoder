@@ -1,5 +1,5 @@
 // material-ui
-import logo from 'assets/images/q_logo.svg';
+import logo from 'assets/images/logo.svg';
 
 // ==============================|| LOGO SVG ||============================== //
 

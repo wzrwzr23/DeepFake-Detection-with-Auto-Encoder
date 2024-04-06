@@ -17,6 +17,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import QueueLengthGraphSim from './queueLengthGraphSim';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import VideoStreamCanvas from './video';
+import UnityComponent from './unity';
 
 const currentDate = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
 
@@ -64,29 +65,41 @@ const Dashboard = () => {
 
   const theme = useTheme();
   const customization = useSelector((state) => state.customization);
-  const { navType } = customization;
 
   const orangeDark = theme.palette.secondary[800];
 
 
   const fetchCounters = async () => {
     try {
-      const response1 = await fetch('http://127.0.0.1:5001/counter?counter_id=1');
+      //queue length
+      const c11 = `http://127.0.0.1:5001/counter?counter_id=1&start_date=${startDate1}&end_date=${endDate1}`;
+      const c21 = `http://127.0.0.1:5001/counter?counter_id=2&start_date=${startDate1}&end_date=${endDate1}`;
+      const response1 = await fetch(c11);
       const data1 = await response1.json();
       setQueue1(data1.queue_length);
-      setWaiting1(data1.avg_waiting_time)
 
-      const response2 = await fetch('http://127.0.0.1:5001/counter?counter_id=2');
+      const response2 = await fetch(c21);
       const data2 = await response2.json();
       setQueue2(data2.queue_length);
-      setWaiting2(data2.avg_waiting_time)
+
+      //waiting time
+      const c12 = `http://127.0.0.1:5001/counter?counter_id=1&start_date=${startDate2}&end_date=${endDate2}`;
+      const c22 = `http://127.0.0.1:5001/counter?counter_id=2&start_date=${startDate2}&end_date=${endDate2}`;
+      const response12 = await fetch(c12);
+      const data12 = await response12.json();
+      setWaiting1(data12.avg_waiting_time)
+
+      const response22 = await fetch(c22);
+      const data22 = await response22.json();
+      setWaiting2(data22.avg_waiting_time)
 
       setFirstRecordTime1(data1.record_time[0]);
       setLastRecordTime1(data1.record_time[data1.record_time.length - 1]);
-      setFirstRecordTime2(data1.record_time[0]);
-      setLastRecordTime2(data1.record_time[data1.record_time.length - 1]);
+      setFirstRecordTime2(data12.record_time[0]);
+      setLastRecordTime2(data12.record_time[data1.record_time.length - 1]);
 
-      const response = await fetch('http://127.0.0.1:5001/arrival_rate');
+      const c13 = `http://127.0.0.1:5001/arrival_rate?start_date=${startDate3}&end_date=${endDate3}`;
+      const response = await fetch(c13);
       const data = await response.json();
       setAllCounters(data.arrival_rate);
       setFirstRecordTime3(data.record_time[0]);
@@ -97,8 +110,10 @@ const Dashboard = () => {
       setCounter1Status(data3.status[0]);
       setCounter2Status(data3.status[1]);
 
-      const ser_response1 = await fetch('http://127.0.0.1:5001/service_rate?counter_id=1');
-      const ser_response2 = await fetch('http://127.0.0.1:5001/service_rate?counter_id=2');
+      const c14 = `http://127.0.0.1:5001/service_rate?counter_id=1&start_date=${startDate4}&end_date=${endDate4}`;
+      const c24 = `http://127.0.0.1:5001/service_rate?counter_id=2&start_date=${startDate4}&end_date=${endDate4}`;
+      const ser_response1 = await fetch(c14);
+      const ser_response2 = await fetch(c24);
       const data4 = await ser_response1.json();
       const data5 = await ser_response2.json();
 
@@ -113,14 +128,31 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Fetch data initially
-    fetchCounters();
-    // // Fetch data every second
-    // const intervalId = setInterval(fetchCounters, 1000);
+    const interval = setInterval(() => {
+      // Update refreshGraph to true every 30 seconds
+      setRefreshGraph(true);
+    }, 30000); // 30 seconds in milliseconds
 
-    // // Cleanup interval on component unmount
-    // return () => clearInterval(intervalId);
-  }, []);
+    // Clear the interval when the component unmounts or refreshGraph changes
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run only once when component mounts
+
+
+  useEffect(() => {
+    // Check if refreshGraph is true
+    if (refreshGraph) {
+      // Fetch data
+      fetchCounters();
+
+      // Set refreshGraph back to false after fetching data
+      // This will trigger the useEffect again only if refreshGraph is set to true in the future
+      // If you want to ensure it runs only once, you might want to remove refreshGraph from the dependency array of useEffect
+      // useEffect(() => {...}, []) instead of useEffect(() => {...}, [refreshGraph])
+      // This depends on your specific requirements
+      setRefreshGraph(false); // Assuming refreshGraph is a mutable variable
+    }
+  }, [refreshGraph, fetchCounters]);
+
 
   const handleStartDateChange1 = (event) => {
     const selectedStartDate = event.target.value;
@@ -896,11 +928,7 @@ const Dashboard = () => {
                   <CardContent>
                     <Grid container spacing={gridSpacing}>
                       <Grid item xs={12}>
-                        {/* <VideoStreamCanvas streamUrl='https://capstone-flask.azurewebsites.net/frame' /> */}
-                        <video controls width="500">
-                          <source src="/output.avi" type="video/avi" />
-                          {/* Your browser does not support the video tag. */}
-                        </video>
+                        <VideoStreamCanvas streamUrl='https://capstone-flask.azurewebsites.net/frame' />
                       </Grid>
                     </Grid>
                   </CardContent>
@@ -915,7 +943,7 @@ const Dashboard = () => {
                   <CardContent>
                     <Grid container spacing={gridSpacing}>
                       <Grid item xs={12} sx={{ pt: '16px !important' }}>
-                        {/* <UnityComponent /> */}
+                        <UnityComponent />
                       </Grid>
                     </Grid>
                   </CardContent>

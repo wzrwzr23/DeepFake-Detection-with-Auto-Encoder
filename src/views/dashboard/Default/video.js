@@ -80,7 +80,7 @@ const VideoStreamCanvas = ({ streamUrl }) => {
             buffer = buffer.slice(end + 2);
             start = 0; // Reset start index to beginning of the buffer
           }
-        }
+       }
       }
     };
 

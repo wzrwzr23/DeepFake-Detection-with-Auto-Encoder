@@ -4,7 +4,7 @@ import UnityComponent from 'views/dashboard/Default/unity';
 
 const SamplePage = () => (
   <div>
-    <UnityComponent />
+    {/* <UnityComponent /> */}
   </div>
 );
 
