@@ -446,7 +446,7 @@ def fetch_arrival_rate():
         SUM(arrival_rate * 0.5) AS arrival_rate_per_hour,
         DATEADD(HOUR, DATEDIFF(HOUR, 0, record_time), 0) AS hour_start
     FROM 
-        dbo.counter_fake
+        dbo.counter
     WHERE counter_id = {counter_id[0]} and record_time between 
         '{start_date} 00:00:00' and '{end_date} 23:59:59'
     GROUP BY 

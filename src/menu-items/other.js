@@ -12,7 +12,7 @@ const other = {
   children: [
     {
       id: 'sample-page',
-      title: '3D Visualisation',
+      title: 'Real-Time Monitoring',
       type: 'item',
       url: '/sample-page',
       icon: icons.IconBrandChrome,

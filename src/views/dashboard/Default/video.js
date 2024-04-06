@@ -34,7 +34,9 @@ const VideoStreamCanvas = ({ streamUrl }) => {
 
     const processStream = async () => {
       while (true) {
+        console.log(streamUrl);
         const response = await fetch(streamUrl);
+        console.log(response);
         readerRef.current = response.body.getReader();
 
         while (true) {
@@ -80,7 +82,7 @@ const VideoStreamCanvas = ({ streamUrl }) => {
             buffer = buffer.slice(end + 2);
             start = 0; // Reset start index to beginning of the buffer
           }
-       }
+        }
       }
     };
 
