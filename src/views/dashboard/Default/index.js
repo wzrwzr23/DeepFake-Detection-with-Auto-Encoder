@@ -16,8 +16,6 @@ import MainCard from 'ui-component/cards/MainCard';
 // import ArrivalAndService from './arrivalAndService';
 import QueueLengthGraphSim from './queueLengthGraphSim';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
-import VideoStreamCanvas from './video';
-import UnityComponent from './unity';
 
 const currentDate = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
 
@@ -914,36 +912,6 @@ const Dashboard = () => {
                     <Grid container spacing={gridSpacing}>
                       <Grid item xs={12} sx={{ pt: '16px !important' }}>
                         <QueueLengthGraphSim />
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                )}
-              </>
-            </Grid>
-            <Grid item xs={12} md={12}>
-              <>
-                {isLoading ? (
-                  <SkeletonPopularCard />
-                ) : (
-                  <CardContent>
-                    <Grid container spacing={gridSpacing}>
-                      <Grid item xs={12}>
-                        <VideoStreamCanvas streamUrl='https://capstone-flask.azurewebsites.net/frame' />
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                )}
-              </>
-            </Grid>
-            <Grid item xs={12} md={12}>
-              <>
-                {isLoading ? (
-                  <SkeletonPopularCard />
-                ) : (
-                  <CardContent>
-                    <Grid container spacing={gridSpacing}>
-                      <Grid item xs={12} sx={{ pt: '16px !important' }}>
-                        {/* <UnityComponent /> */}
                       </Grid>
                     </Grid>
                   </CardContent>

@@ -3,7 +3,7 @@ import { Unity, useUnityContext } from "react-unity-webgl";
 
 function UnityComponent() {
     const { unityProvider, loadingProgression, isLoaded } = useUnityContext({
-        loaderUrl: "/unity/Build/backup.loader.js",
+        loaderUrl: "/unity/Build/UnityFinal.loader.js",
         dataUrl: "/unity/Build/webgl.data",
         frameworkUrl: "/unity/Build/build.framework.js",
         codeUrl: "/unity/Build/build.wasm",

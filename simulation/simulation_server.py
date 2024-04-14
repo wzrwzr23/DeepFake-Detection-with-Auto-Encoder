@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import heapq
 import random
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
@@ -546,17 +546,7 @@ def update_cur_counter():
 
     return "Current counter status updated", 200
 
-
-@app.route('/')
-def serve_index():
-    return send_from_directory('unity', 'index.html')
-
-
-@app.route('/<path:path>')
-def serve_files(path):
-    return send_from_directory('unity', path)
-
-
+#not working
 @app.after_request
 def after(response):
     # print(response.headers)
