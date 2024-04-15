@@ -48,3 +48,4 @@ if video_path.endswith('.mp4') or video_path.endswith('.avi'):
     percent = test_full_image_network(video_path, model_path)
 else:
     print("Unsupported video format.")
+
