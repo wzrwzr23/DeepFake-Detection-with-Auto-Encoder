@@ -15,23 +15,28 @@ def allowed_file(filename):
 def upload_file():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'})
-    
+
     file = request.files['file']
-    
+
     if file.filename == '':
         return jsonify({'error': 'No selected file'})
-    
+
+    # Receive selected models
+    selected_models = request.form.getlist('selectedModels')
+    print("Selected Models:", selected_models)
+
     if file and allowed_file(file.filename):
         # Create directory if it doesn't exist
         if not os.path.exists(app.config['UPLOAD_FOLDER']):
             os.makedirs(app.config['UPLOAD_FOLDER'])
-        
+
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
         return jsonify({'success': True, 'message': 'File uploaded successfully'})
     else:
         return jsonify({'error': 'File type not allowed'})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

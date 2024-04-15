@@ -28,7 +28,7 @@ const Dashboard = () => {
                   <>
                     <CardContent>
                       <Grid container spacing={gridSpacing}>
-                        <Grid item xs={5.1} sx={{ pt: '16px !important' }}>
+                        <Grid item xs={3.2} sx={{ pt: '8px !important' }}>
                           <Card sx={{ bgcolor: 'secondary.light' }}>
                             <InputFileUpload/>
                           </Card>
@@ -38,11 +38,11 @@ const Dashboard = () => {
                     {/* Add space for model output */}
                     <CardContent>
                       <Grid container spacing={gridSpacing}>
-                        <Grid item xs={12} sx={{ pt: '16px !important' }}>
+                        <Grid item xs={5} sx={{ pt: '16px !important' }}>
                           <Card sx={{ bgcolor: 'secondary.light' }}>
                             {/* Add your model output component here */}
                             <Typography variant="h6" color="textPrimary">
-                              Model Output
+                              Model Output:
                             </Typography>
                             {/* Add your model output content here */}
                           </Card>
