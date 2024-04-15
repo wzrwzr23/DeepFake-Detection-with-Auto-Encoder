@@ -1,0 +1,9 @@
+numpy
+pandas
+torch
+pillow
+datasets
+torchvision
+transformers
+evaluate
+accelerate
