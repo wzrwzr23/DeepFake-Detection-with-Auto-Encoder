@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import os
+from detect_from_video import test_full_image_network
 
 app = Flask(__name__)
 
@@ -40,3 +41,11 @@ def upload_file():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+video_path = None
+model_path = None
+if video_path.endswith('.mp4') or video_path.endswith('.avi'):
+    percent = test_full_image_network(video_path, model_path)
+else:
+    print("Unsupported video format.")
+
