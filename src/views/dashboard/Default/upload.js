@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -47,7 +47,6 @@ const InputFileUpload = () => {
 
   return (
     <>
-      {/* <input type="file" onChange={handleFileChange} /> */}
       <Button
       onClick={handleUpload}
       component="label"

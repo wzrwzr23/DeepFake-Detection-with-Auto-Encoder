@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import { useTheme } from '@mui/material/styles';
-import { Card, Grid, Typography, CardContent, Divider, TextField, Switch, Button } from '@mui/material';
+import { Card, Grid, Typography, CardContent } from '@mui/material';
 import MainCard from 'ui-component/cards/MainCard';
 import SkeletonPopularCard from 'ui-component/cards/Skeleton/PopularCard';
 import { gridSpacing } from 'store/constant';
