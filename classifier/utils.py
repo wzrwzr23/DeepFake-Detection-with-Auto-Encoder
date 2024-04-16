@@ -1,5 +1,5 @@
 import os
-from xception import Xception, pretrained_settings
+from .xception import Xception, pretrained_settings
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -15,7 +15,7 @@ from transformers import TrainingArguments, Trainer
 from safetensors.torch import load
 
 
-xception_path = 'checkpoints/xception-b5690688.pth'
+xception_path = 'xception-b5690688.pth'
 def xception(num_classes=1000, pretrained='imagenet'):
     model = Xception(num_classes=num_classes)
     if pretrained:

@@ -1,16 +1,22 @@
-import { useState } from 'react';
-import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { Grid, Typography } from '@mui/material';
 
-const InputFileUpload = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
+
+import React, { useState } from "react"
+import FileUpload from "react-mui-fileuploader"
+import Button from '@mui/material/Button';
+
+
+function MuiFileUploader() {
+  const [filesToUpload, setFilesToUpload] = useState([])
   const [selectedModels, setSelectedModels] = useState([]);
+  const [results, setResults] = useState(null);
 
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
+  const handleFilesChange = (files) => {
+    // Update chosen files
+    setFilesToUpload([...files])
   };
 
   const handleModelCheckboxChange = (index) => {
@@ -21,15 +27,17 @@ const InputFileUpload = () => {
     }
   };
 
-  const handleUpload = () => {
-    if (!selectedFile) {
+  const uploadFiles = () => {
+    if (!filesToUpload[0]) {
       console.error('No file selected');
       return;
     }
 
     const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('selectedModels', JSON.stringify(selectedModels)); // Send selected models
+    formData.append('file', filesToUpload[0]); // Append the first file in the array
+    formData.append('selectedModels', selectedModels.join(',')); // Join selected models as a string
+
+    console.log('FormData:', formData);
 
     fetch('http://localhost:5000/upload', {
       method: 'POST',
@@ -37,47 +45,43 @@ const InputFileUpload = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data);
-        // Handle response here
+        console.log('Upload success:', data);
+        setResults(data.results); // Set the results in state
       })
       .catch(error => {
         console.error('Error uploading file:', error);
       });
   };
 
-  // StyledButton with custom CSS to remove the focus outline
-  const StyledButton = styled(Button)({
-    '&:focus': {
-      outline: 'none',
-    },
-  });
 
   return (
     <>
-      <StyledButton
-        onClick={handleUpload}
-        component="label"
-        role={undefined}
-        variant="contained"
-        tabIndex={-1}
-        startIcon={<CloudUploadIcon />}
-        sx={{ '&:focus': { outline: 'none' } }} // additional inline style to ensure the outline is removed
-      >
-        Upload file
-        <input type="file" style={{ display: 'none' }} onChange={handleFileChange} />
-      </StyledButton>
-
-      {/* Model selection checkboxes */}
-      <FormControlLabel
-        control={<Checkbox checked={selectedModels.includes(0)} onChange={() => handleModelCheckboxChange(0)} />}
-        label="Model 1"
+      <Grid item xs={6} marginLeft={0.5} marginTop={1}>
+        <Typography>Model Selection: </Typography>
+      </Grid>
+      <Grid item xs={6} marginLeft={0.5}>
+        <FormControlLabel
+          control={<Checkbox checked={selectedModels.includes(0)} onChange={() => handleModelCheckboxChange(0)} />}
+          label="XceptionNet with Augmentation"
+        />
+        <FormControlLabel
+          control={<Checkbox checked={selectedModels.includes(1)} onChange={() => handleModelCheckboxChange(1)} />}
+          label="XceptionNet without Augmentation"
+        />
+      </Grid>
+      <FileUpload
+        multiFile={true}
+        onFilesChange={handleFilesChange}
+        onContextReady={(context) => { }}
       />
-      <FormControlLabel
-        control={<Checkbox checked={selectedModels.includes(1)} onChange={() => handleModelCheckboxChange(1)} />}
-        label="Model 2"
-      />
+      <Button variant="contained" onClick={uploadFiles} startIcon={<CloudUploadIcon />}>Upload</Button>
+      {results && (
+        <div>
+          <h2>Results:</h2>
+          <pre>{JSON.stringify(results, null, 2)}</pre>
+        </div>
+      )}
     </>
-  );
-};
-
-export default InputFileUpload;
+  )
+}
+export default MuiFileUploader;
