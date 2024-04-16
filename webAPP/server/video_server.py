@@ -26,23 +26,27 @@ def process_file(filepath):
     if not os.path.exists(frame_dir):
         os.makedirs(frame_dir)
 
-    # Read the video file
-    cap = cv2.VideoCapture(filepath)
+    # Read the input video
+    video_capture = cv2.VideoCapture(filepath)
 
-    # Read and save each frame
+    # Open a dictionary to store coordinates for each frame
+    coordinates_dict = {}
+
+    # Process Frames and Save as JPEG files
     frame_count = 0
-    while cap.isOpened():
-        ret, frame = cap.read()
+    while video_capture.isOpened():
+        ret, frame = video_capture.read()
         if not ret:
             break
 
-        # Check if the frame is valid
-        if frame is not None:
-            frame_path = os.path.join(frame_dir, f"{filename}_{frame_count}.jpg")
-            cv2.imwrite(frame_path, frame)
-            frame_count += 1
+        # Save each frame as a JPEG file
+        frame_path = os.path.join(frame_dir, f"{filename}_{frame_count}.jpg")
+        cv2.imwrite(frame_path, frame)
 
-    cap.release()
+        frame_count += 1
+
+    # Release the video capture object
+    video_capture.release()
 
     return {'frame_count': frame_count, 'frame_dir': frame_dir}
 
@@ -74,6 +78,7 @@ def upload_file():
 
         filename = secure_filename(file.filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        filepath = process_file(filepath)
         file.save(filepath)
 
         # Process the file and get results
@@ -92,16 +97,19 @@ detector_unchange = utils.DeepFakeDetector(
 
 def get_model(filepath, selected):
     # Example code to use your classifier
-    result = {}
-    if len(selected) == 2:
-        result['change'] = detector_change.detect(filepath)
-        result['unchange'] = detector_unchange.detect(filepath)
-    elif len(selected) == 1:
-        if selected[0] == '0':
-            result['change'] = detector_change.detect(filepath)
-        if selected[0] == '1':
-            result['unchange'] = detector_unchange.detect(filepath)
-    print(result)
+
+    for frame_file in os.listdir(filepath):
+        result = {}
+        if len(selected) == 2:
+            result['change'] = detector_change.detect(frame_file)
+            result['unchange'] = detector_unchange.detect(frame_file)
+        elif len(selected) == 1:
+            if selected[0] == '0':
+                result['change'] = detector_change.detect(frame_file)
+            if selected[0] == '1':
+                result['unchange'] = detector_unchange.detect(frame_file)
+        print(result)
+        break
     return result
 
 
