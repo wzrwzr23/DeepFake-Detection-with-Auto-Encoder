@@ -19,41 +19,7 @@ const Dashboard = () => {
     <MainCard title="Video Upload">
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12}>
-          <Grid container spacing={gridSpacing}>
-            <Grid item xs={12} md={6}>
-              <>
-                {isLoading ? (
-                  <SkeletonPopularCard />
-                ) : (
-                  <>
-                    <CardContent>
-                      <Grid container spacing={gridSpacing}>
-                        <Grid item xs={3.2} sx={{ pt: '8px !important' }}>
-                          <Card sx={{ bgcolor: 'secondary.light' }}>
-                            <InputFileUpload/>
-                          </Card>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                    {/* Add space for model output */}
-                    <CardContent>
-                      <Grid container spacing={gridSpacing}>
-                        <Grid item xs={5} sx={{ pt: '16px !important' }}>
-                          <Card sx={{ bgcolor: 'secondary.light' }}>
-                            {/* Add your model output component here */}
-                            <Typography variant="h6" color="textPrimary">
-                              Model Output:
-                            </Typography>
-                            {/* Add your model output content here */}
-                          </Card>
-                        </Grid>
-                      </Grid>
-                    </CardContent>
-                  </>
-                )}
-              </>
-            </Grid>
-          </Grid>
+          <InputFileUpload />
         </Grid>
       </Grid>
     </MainCard>
